@@ -75,55 +75,56 @@
     <!-- Pustaka jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
        <script>
+    <script>
     async function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-        // URL dari gambar yang sudah di-upload
-        const backgroundUrl = "https://mbjxx.github.io/invoice-test1/bg.jpg";
-        
-        // Muat gambar background ke dalam PDF
-        const img = new Image();
-        img.src = backgroundUrl;
-        img.onload = function() {
-            // Tambahkan gambar sebagai background (fit ke ukuran A4)
-            doc.addImage(img, 'PNG', 0, 0, 210, 297); // Sesuaikan ukuran dalam mm (A4)
+    // URL dari gambar background di GitHub
+    const backgroundUrl = "https://raw.githubusercontent.com/mbjxx/invoice-test1/main/bg.jpg";
 
-            // Ambil nilai dari form
-            const name = document.getElementById('name').value;
-            const date = document.getElementById('date').value;
-            const service = document.getElementById('service').value;
-            const hours = document.getElementById('hours').value;
-            const rate = document.getElementById('rate').value;
-            const dp = document.getElementById('dp').value;
+    // Muat gambar background ke dalam PDF
+    const img = new Image();
+    img.crossOrigin = "anonymous"; // Mengatasi masalah CORS jika terjadi
+    img.src = backgroundUrl;
+    img.onload = function() {
+        // Tambahkan gambar sebagai background (fit ke ukuran A4)
+        doc.addImage(img, 'PNG', 0, 0, 210, 297);
 
-            const subtotal = hours * rate;
-            const remaining = subtotal - dp;
+        // Ambil nilai dari form
+        const name = document.getElementById('name').value;
+        const date = document.getElementById('date').value;
+        const service = document.getElementById('service').value;
+        const hours = document.getElementById('hours').value;
+        const rate = document.getElementById('rate').value;
+        const dp = document.getElementById('dp').value;
 
-            // Menambahkan teks di atas background
-            doc.setFontSize(12);
-            doc.text("INVOICE", 10, 20);
-            doc.text(`Bill to: ${name}`, 10, 30);
-            doc.text(`Date: ${date}`, 10, 40);
+        const subtotal = hours * rate;
+        const remaining = subtotal - dp;
 
-            doc.text("Service:", 10, 50);
-            doc.text(service, 10, 60);
-            doc.text(`Work Hour: ${hours}`, 10, 70);
-            doc.text(`Rate per Hour: Rp ${rate}`, 10, 80);
+        // Menambahkan teks di atas background
+        doc.setFontSize(12);
+        doc.text("INVOICE", 10, 20);
+        doc.text(`Bill to: ${name}`, 10, 30);
+        doc.text(`Date: ${date}`, 10, 40);
+        doc.text("Service:", 10, 50);
+        doc.text(service, 10, 60);
+        doc.text(`Work Hour: ${hours}`, 10, 70);
+        doc.text(`Rate per Hour: Rp ${rate}`, 10, 80);
+        doc.text(`Subtotal: Rp ${subtotal}`, 10, 100);
+        doc.text(`DP: Rp ${dp}`, 10, 110);
+        doc.text(`Balance Due: Rp ${remaining}`, 10, 120);
 
-            doc.text(`Subtotal: Rp ${subtotal}`, 10, 100);
-            doc.text(`DP: Rp ${dp}`, 10, 110);
-            doc.text(`Balance Due: Rp ${remaining}`, 10, 120);
+        // Simpan sebagai PDF
+        doc.save("invoice.pdf");
+    };
 
-            // Simpan sebagai PDF
-            doc.save("invoice.pdf");
-        };
+    img.onerror = function() {
+        alert("Gagal memuat background image! Periksa URL dan coba lagi.");
+    };
+}
 
-        // Error handling jika gambar tidak dimuat
-        img.onerror = function() {
-            alert("Gagal memuat background image!");
-        };
-    }
 </script>
+
 </body>
 </html>
